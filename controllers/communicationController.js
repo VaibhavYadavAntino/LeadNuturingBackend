@@ -1,4 +1,6 @@
 const communicationService = require('../services/communicationService');
+const leadService = require('../services/leadService');
+const messagingService = require('../services/messagingService');
 const Lead = require('../models/lead');
 const mongoose = require('mongoose');
 
@@ -94,10 +96,45 @@ const deleteCommunicationLog = async (req, res) => {
     }
 };
 
+const sendEmailToLead = async (req, res) => {
+    const { leadId, subject, message } = req.body;
+
+    if (!leadId || !subject || !message) {
+        return res.status(400).json({ message: 'leadId, subject, and message are required' });
+    }
+
+    try {
+        const lead = await leadService.getLeadById(leadId);
+        if (!lead) {
+            return res.status(404).json({ message: 'Lead not found' });
+        }
+
+        const emailResult = await messagingService.sendEmail(lead.email, subject, message);
+
+        if (!emailResult.success) {
+            return res.status(500).json({ message: 'Failed to send email' });
+        }
+
+        await communicationService.createCommunication({
+            lead: leadId,
+            channel: 'email',
+            message: `Subject: ${subject} - Body: ${message}`,
+        });
+
+        await leadService.updateLead(leadId, { lastContactDate: new Date() });
+
+        res.json({ message: 'Email sent successfully' });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
   createCommunicationLog,
   getAllCommunicationLogs,
   getCommunicationLogById,
   updateCommunicationLog,
   deleteCommunicationLog,
+  sendEmailToLead,
 };

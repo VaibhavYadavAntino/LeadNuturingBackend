@@ -6,6 +6,7 @@ const {
   getCommunicationLogById,
   updateCommunicationLog,
   deleteCommunicationLog,
+  sendEmailToLead,
 } = require('../controllers/communicationController');
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -18,5 +19,7 @@ router.route('/:id')
   .get(protect, validateObjectId, getCommunicationLogById)
   .put(protect, validateObjectId, updateCommunicationLog)
   .delete(protect, validateObjectId, deleteCommunicationLog);
+
+router.post('/send-email', protect, sendEmailToLead);
 
 module.exports = router;
