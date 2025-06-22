@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-const Admin = require('./models/admin');
+const leadRoutes = require('./routes/leadRoutes');
+const adminService = require('./services/adminService');
 
 const app = express();
 
@@ -16,24 +17,13 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/leads', leadRoutes);
 
 // Create default admin
-const createDefaultAdmin = async () => {
-    try {
-        const adminExists = await Admin.findOne({ email: process.env.DEFAULT_ADMIN_EMAIL });
-        if (!adminExists) {
-            await Admin.create({
-                email: process.env.DEFAULT_ADMIN_EMAIL,
-                password: process.env.DEFAULT_ADMIN_PASSWORD,
-            });
-            console.log('Default admin created');
-        }
-    } catch (error) {
-        console.error('Error creating default admin:', error);
-    }
-};
-
-createDefaultAdmin();
+adminService.createDefaultAdmin(
+  process.env.DEFAULT_ADMIN_EMAIL,
+  process.env.DEFAULT_ADMIN_PASSWORD
+);
 
 const PORT = process.env.PORT || 5000;
 
