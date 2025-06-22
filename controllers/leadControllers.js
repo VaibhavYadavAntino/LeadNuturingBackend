@@ -56,7 +56,7 @@ const updateLead = async (req, res) => {
     if (updatedLead) {
       res.json(updatedLead);
     } else {
-      res.status(404).json({ message: 'Lead not found' });
+      res.json({ message: 'Lead not found' });
     }
   } catch (error) {
     res.status(400).json({ message: 'Error updating lead', error: error.message });
@@ -75,7 +75,7 @@ const deleteLead = async (req, res) => {
     if (lead) {
       res.json({ message: 'Lead removed' });
     } else {
-      res.status(404).json({ message: 'Lead not found' });
+      res.json({ message: 'Lead not found' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

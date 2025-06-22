@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const leadRoutes = require('./routes/leadRoutes');
+const communicationRoutes = require('./routes/communicationRoutes');
 const adminService = require('./services/adminService');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/communications', communicationRoutes);
 
 // Create default admin
 adminService.createDefaultAdmin(
