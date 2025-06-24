@@ -23,6 +23,7 @@ jobs:
     needs: build
     runs-on: [ip-10-0-5-103]  # self-hosted EC2 runner
     steps:
+    - run: echo "Runner is working!"
     - name: Pull image from Docker Hub
       run: docker pull vaibhavyadav350/leadnuturingbackend:latest
 
