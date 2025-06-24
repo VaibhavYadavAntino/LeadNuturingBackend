@@ -21,7 +21,7 @@ jobs:
       run: docker push vaibhavyadav350/leadnuturingbackend:latest
   deploy:
     needs: build
-    runs-on: ip-10-0-5-103 
+    runs-on: [self-hosted, linux, x64]
     steps:
     - run: echo "Runner is working!"
     - name: Pull image from Docker Hub
