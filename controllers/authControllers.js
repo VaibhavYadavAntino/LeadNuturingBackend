@@ -6,7 +6,7 @@ const loginAdmin = async (req, res) => {
 
   try {
     const token = await authService.loginAdmin(email, password);
-    const admin = await Admin.findOne({ email }); // To get admin details without password
+    const admin = await Admin.findOne({ email });
 
     res.json({
       _id: admin._id,

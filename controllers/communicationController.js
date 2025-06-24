@@ -1,7 +1,7 @@
 const communicationService = require('../services/communicationService');
 const leadService = require('../services/leadService');
 const messagingService = require('../services/messagingService');
-const Lead = require('../models/lead');
+const Lead = require('../models/Lead');
 const mongoose = require('mongoose');
 
 // @desc    Create a new communication log
@@ -129,6 +129,7 @@ const sendEmailToLead = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
 
 module.exports = {
   createCommunicationLog,

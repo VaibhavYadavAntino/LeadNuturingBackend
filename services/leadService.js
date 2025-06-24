@@ -1,4 +1,4 @@
-const Lead = require('../models/lead');
+const Lead = require('../models/Lead');
 
 const createLead = async (leadData) => {
   leadData.lastContactDate = new Date();
@@ -34,10 +34,21 @@ const deleteLead = async (id) => {
     return lead;
 };
 
+
+const fetchLeadStats = async () => {
+  const totalLeads = await Lead.countDocuments();
+  const engaged = await Lead.countDocuments({ status: 'engaged' });
+  const dormant = await Lead.countDocuments({ status: 'dormant' });
+  const unresponsive = await Lead.countDocuments({ status: 'unresponsive' });
+
+  return { totalLeads, engaged, dormant, unresponsive };
+};
+
 module.exports = {
   createLead,
   getLeads,
   getLeadById,
   updateLead,
   deleteLead,
+  fetchLeadStats,
 }; 

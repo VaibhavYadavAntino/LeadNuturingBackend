@@ -82,10 +82,25 @@ const deleteLead = async (req, res) => {
   }
 };
 
+
+const getLeadsCount = async (req, res) => {
+  try {
+    const stats = await leadService.fetchLeadStats();
+    return res.status(200).json(stats);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching lead counts",
+      error: error.message
+    });
+  }
+};
+
+
 module.exports = {
   createLead,
   getLeads,
   getLeadById,
   updateLead,
   deleteLead,
+  getLeadsCount,
 };
