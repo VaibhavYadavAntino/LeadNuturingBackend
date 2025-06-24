@@ -34,11 +34,11 @@ jobs:
       run: mkdir -p /home/ubuntu/LeadNuturingBackend
       
     - name: Write .env file to EC2
-      run: echo "${{ secrets.ENV_FILE }}" > /home/ec2-user/LeadNuturingBackend/.env
+      run: echo "${{ secrets.ENV_FILE }}" > /home/ubuntu/LeadNuturingBackend/.env
 
     - name: Run Docker container with env
       run: |
         docker run -d -p 5000:5000 \
-          --env-file /home/ec2-user/LeadNuturingBackend/.env \
+          --env-file /home/ubuntu/LeadNuturingBackend/.env \
           --name leadnuturingbackend-container \
           vaibhavyadav350/leadnuturingbackend:latest
