@@ -31,8 +31,8 @@ jobs:
       run: docker rm -f leadnuturingbackend-container || true
 
     - name: Create directory for env file
-      run: mkdir -p /home/ec2-user/LeadNuturingBackend
-
+      run: mkdir -p /home/ubuntu/LeadNuturingBackend
+      
     - name: Write .env file to EC2
       run: echo "${{ secrets.ENV_FILE }}" > /home/ec2-user/LeadNuturingBackend/.env
 
