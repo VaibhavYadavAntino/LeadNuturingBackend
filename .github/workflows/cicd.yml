@@ -23,7 +23,7 @@ jobs:
     needs: build
     runs-on: [self-hosted, linux, x64]
     steps:
-    - run: echo "Runner is working!!!!"
+    - run: echo "Runner is working!!!"
     - name: Pull image from Docker Hub
       run: docker pull vaibhavyadav350/leadnuturingbackend:latest
 
