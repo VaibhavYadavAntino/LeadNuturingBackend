@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const leadRoutes = require('./routes/leadRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const adminService = require('./services/adminService');
+const startCronJob=require('./cron/statusUpdater');
 
 const app = express();
 
@@ -18,6 +19,7 @@ connectDB();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -34,6 +36,7 @@ adminService.createDefaultAdmin(
   process.env.DEFAULT_ADMIN_PASSWORD
 );
 
+startCronJob();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
