@@ -15,17 +15,16 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker Image
-      run: docker build -t vaibhavyadavantino/leadnuturingbackend .
-
+      run: docker build -t vaibhavyadav350/leadnuturingbackend .
+      
     - name: Publish Image to DockerHub 
-      run: docker push vaibhavyadavantino/leadnuturingbackend:latest
-
+      run: docker push vaibhavyadav350/leadnuturingbackend:latest
   deploy:
     needs: build
     runs-on: [ip-10-0-5-103]  # self-hosted EC2 runner
     steps:
     - name: Pull image from Docker Hub
-      run: docker pull vaibhavyadavantino/leadnuturingbackend:latest
+      run: docker pull vaibhavyadav350/leadnuturingbackend:latest
 
     - name: Delete old container
       run: docker rm -f leadnuturingbackend-container || true
@@ -41,4 +40,4 @@ jobs:
         docker run -d -p 5000:5000 \
           --env-file /home/ec2-user/LeadNuturingBackend/.env \
           --name leadnuturingbackend-container \
-          vaibhavyadavantino/leadnuturingbackend:latest
+          vaibhavyadav350/leadnuturingbackend:latest
