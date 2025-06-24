@@ -44,6 +44,18 @@ const fetchLeadStats = async () => {
   return { totalLeads, engaged, dormant, unresponsive };
 };
 
+const getLeadsInactive30Days = async () => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  return await Lead.find({ lastContactDate: { $lt: thirtyDaysAgo } });
+};
+
+const countLeadsInactive30Days = async () => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  return await Lead.countDocuments({ lastContactDate: { $lt: thirtyDaysAgo } });
+};
+
 module.exports = {
   createLead,
   getLeads,
@@ -51,4 +63,6 @@ module.exports = {
   updateLead,
   deleteLead,
   fetchLeadStats,
+  getLeadsInactive30Days,
+  countLeadsInactive30Days,
 }; 

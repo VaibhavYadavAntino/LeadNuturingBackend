@@ -95,6 +95,23 @@ const getLeadsCount = async (req, res) => {
   }
 };
 
+const getLeadsInactive30Days = async (req, res) => {
+  try {
+    const leads = await leadService.getLeadsInactive30Days();
+    res.json(leads);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const countLeadsInactive30Days = async (req, res) => {
+  try {
+    const count = await leadService.countLeadsInactive30Days();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 
 module.exports = {
   createLead,
@@ -103,4 +120,6 @@ module.exports = {
   updateLead,
   deleteLead,
   getLeadsCount,
+  getLeadsInactive30Days,
+  countLeadsInactive30Days,
 };

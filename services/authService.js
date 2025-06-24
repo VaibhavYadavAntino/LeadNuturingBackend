@@ -9,7 +9,7 @@ const loginAdmin = async (email, password) => {
       { id: admin._id, email: admin.email },
       process.env.JWT_SECRET,
       {
-        expiresIn: '1d',
+        expiresIn: '365d',
       }
     );
   } else {
