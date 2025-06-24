@@ -30,6 +30,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/communications', communicationRoutes);
 
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP', message: 'API is working fine!' });
+});
+
 // Create default admin
 adminService.createDefaultAdmin(
   process.env.DEFAULT_ADMIN_EMAIL,
