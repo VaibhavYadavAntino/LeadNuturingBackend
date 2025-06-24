@@ -1,7 +1,16 @@
 const Communication = require('../models/communication');
+const RecentActivity = require('../models/RecentActivity');
 
 const createCommunication = async (data) => {
-  return await Communication.create(data);
+  const log = await Communication.create(data);
+  // Add to RecentActivity
+  await RecentActivity.create({
+    type: 'message',
+    lead: log.lead,
+    info: `Message sent via ${log.channel}`,
+    timestamp: log.timestamp
+  });
+  return log;
 };
 
 const getCommunications = async (filter = {}) => {
