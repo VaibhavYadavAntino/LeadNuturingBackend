@@ -1,24 +1,9 @@
 const Lead = require('../models/Lead');
 
 const createLead = async (leadData) => {
-  let now = new Date();
-  if (leadData.status === 'engaged') {
-    leadData.lastContactDate = now;
-  } else if (leadData.status === 'dormant') {
-    // Random date between 30 and 60 days ago
-    const daysAgo = 30 + Math.floor(Math.random() * 31); // 30 to 60
-    let date = new Date(now);
-    date.setDate(now.getDate() - daysAgo);
-    leadData.lastContactDate = date;
-  } else if (leadData.status === 'unresponsive') {
-    // Random date between 90 and 120 days ago
-    const daysAgo = 90 + Math.floor(Math.random() * 31); // 90 to 120
-    let date = new Date(now);
-    date.setDate(now.getDate() - daysAgo);
-    leadData.lastContactDate = date;
-  } else {
-    leadData.lastContactDate = now;
-  }
+  leadData.lastContactDate = new Date();
+  //reverted 
+  
   return await Lead.create(leadData);
 };
 
