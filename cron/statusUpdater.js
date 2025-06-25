@@ -2,27 +2,19 @@
 const cron = require('node-cron');
 const Lead = require('../models/Lead');
 const RecentActivity = require('../models/RecentActivity');
+const { getLeadStatus } = require('../utils/lead.util');
 
 const autoUpdateLeadStatuses = async () => {
     console.log(`[${new Date().toLocaleTimeString()}]  Cron triggered`);
     console.log(`[${new Date().toLocaleTimeString()}]  Checking lead statuses...`);
   try {
     const leads = await Lead.find({});
-    const now = new Date();
     let updatedCount = 0;
 
     for (const lead of leads) {
-      const daysSinceContact = Math.floor((now - new Date(lead.lastContactDate)) / (1000 * 60 * 60 * 24));
-      let newStatus = null;
-      let oldStatus = lead.status;
-
-      if (lead.status === 'engaged' && daysSinceContact > 30) {
-        newStatus = 'dormant';
-      } else if (lead.status === 'dormant' && daysSinceContact > 90) {
-        newStatus = 'unresponsive';
-      }
-
-      if (newStatus) {
+      const oldStatus = lead.status;
+      const newStatus = getLeadStatus(lead.lastContactDate);
+      if (oldStatus !== newStatus) {
         lead.status = newStatus;
         await lead.save();
         updatedCount++;

@@ -7,6 +7,7 @@ const {
   updateCommunicationLog,
   deleteCommunicationLog,
   sendEmailToLead,
+  sendWhatsAppToLead,
 } = require('../controllers/communicationController');
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -21,5 +22,6 @@ router.route('/:id')
   .delete(protect, validateObjectId, deleteCommunicationLog);
 
 router.post('/send-email', protect, sendEmailToLead);
+router.post('/send-whatsapp', protect, sendWhatsAppToLead);
 
 module.exports = router;

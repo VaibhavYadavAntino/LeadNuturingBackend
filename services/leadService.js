@@ -1,30 +1,18 @@
 const Lead = require('../models/Lead');
 const { autoUpdateLeadStatuses } = require('../cron/statusUpdater');
+const { getLeadStatus } = require('../utils/lead.util');
+const { daysBetween } = require('../utils/date.util');
 
 const createLead = async (leadData) => {
   // Ensure lastContactDate is provided
   if (!leadData.lastContactDate) {
     throw new Error('lastContactDate is required');
   }
-  const now = new Date();
-  const lastContact = new Date(leadData.lastContactDate);
-  const daysSinceContact = Math.floor((now - lastContact) / (1000 * 60 * 60 * 24));
-
-  let status = 'engaged';
-  if (daysSinceContact > 90) {
-    status = 'unresponsive';
-  } else if (daysSinceContact > 30) {
-    status = 'dormant';
-  }
-
-  // Ignore any status from user input
-  leadData.status = status;
-
+  // Use utility for status
+  leadData.status = getLeadStatus(leadData.lastContactDate);
   const lead = await Lead.create(leadData);
-
   // Run status update after lead creation
   await autoUpdateLeadStatuses();
-
   return lead;
 };
 
@@ -41,10 +29,11 @@ const updateLead = async (id, leadData) => {
   if (!lead) {
     return null;
   }
-
   Object.assign(lead, leadData);
-  lead.lastContactDate = new Date();
-  
+  if (leadData.lastContactDate) {
+    lead.lastContactDate = new Date();
+    lead.status = getLeadStatus(lead.lastContactDate);
+  }
   return await lead.save();
 };
 
@@ -57,13 +46,11 @@ const deleteLead = async (id) => {
     return lead;
 };
 
-
 const fetchLeadStats = async () => {
   const totalLeads = await Lead.countDocuments();
   const engaged = await Lead.countDocuments({ status: 'engaged' });
   const dormant = await Lead.countDocuments({ status: 'dormant' });
   const unresponsive = await Lead.countDocuments({ status: 'unresponsive' });
-
   return { totalLeads, engaged, dormant, unresponsive };
 };
 
