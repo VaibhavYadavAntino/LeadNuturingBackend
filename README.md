@@ -114,14 +114,60 @@ Response:
   "uptime": "API is working fine!"
 }
 ```
+## 🚀 CI/CD
 
-## Environment Variables
+This project uses **GitHub Actions** for Continuous Integration and Continuous Deployment (CI/CD) to automate the build, push, and deployment of the Node.js backend.
 
-- `PORT`: Server port (default: 5000)
-- `MONGO_URI`: MongoDB connection string
-- `JWT_SECRET`: Secret for JWT tokens
-- `DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD`: Initial admin credentials
-- `EMAIL_USER`, `EMAIL_PASS`: Email credentials for Nodemailer
+### ⚙️ CI/CD Pipeline Flow
+
+1. **Trigger**: The workflow is triggered on every push to the `dev` branch.
+2. **Build**:
+   - Checks out the latest source code.
+   - Logs in to Docker Hub using GitHub Secrets.
+   - Builds the Docker image of the backend.
+   - Pushes the image to Docker Hub: `vaibhavyadav350/leadnuturingbackend`.
+3. **Deploy**:
+   - A self-hosted GitHub Actions runner running on an EC2 instance pulls the latest Docker image.
+   - Deletes any existing Docker container.
+   - Recreates and starts the container with the latest image.
+   - Loads environment variables from a `.env` file securely passed as a GitHub Secret (`ENV_FILE`).
+   
+### 🏃 Self-Hosted GitHub Actions Runner
+
+A **self-hosted runner** is configured on an EC2 instance to allow GitHub Actions to deploy directly to the server.
+
+#### 🧩 Setup Summary:
+
+- EC2 instance is based on Ubuntu.
+- `docker` and `node` are installed on the instance.
+- A GitHub Actions runner is installed and registered:
+  ```bash
+  ./config.sh --url https://github.com/VaibhavYadavAntino/LeadNuturingBackend --token YOUR_TOKEN
+  ./run.sh
+
+### 📁 Key Files
+
+- `.github/workflows/CICD.yml`: GitHub Actions workflow configuration file.
+- `Dockerfile`: Used to build the Docker image.
+- `.env`: Environment variables (not stored in the repo; passed through secrets).
+
+### 🖥️ EC2 Configuration
+
+- EC2 instance acts as a self-hosted runner registered with GitHub.
+- Docker is installed and running.
+- Port `5000` is open in the security group for HTTP traffic.
+- (Optional) Nginx can be used to route traffic and enable HTTPS (port `443`).
+
+### 🔐 Required GitHub Secrets
+
+| Secret Name        | Description                         |
+|--------------------|-------------------------------------|
+| `DOCKER_USERNAME`  | Your Docker Hub username            |
+| `DOCKER_PASSWORD`  | Your Docker Hub password/token      |
+| `ENV_FILE`         | Contents of your `.env` file        |
+
+> Make sure to keep these secrets secure and never commit sensitive information to the repository.
+
 
 ## Contribution
 
