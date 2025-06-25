@@ -1,4 +1,5 @@
 const Lead = require('../models/Lead');
+const { autoUpdateLeadStatuses } = require('../cron/statusUpdater');
 
 const createLead = async (leadData) => {
   // Ensure lastContactDate is provided
@@ -19,7 +20,12 @@ const createLead = async (leadData) => {
   // Ignore any status from user input
   leadData.status = status;
 
-  return await Lead.create(leadData);
+  const lead = await Lead.create(leadData);
+
+  // Run status update after lead creation
+  await autoUpdateLeadStatuses();
+
+  return lead;
 };
 
 const getLeads = async () => {

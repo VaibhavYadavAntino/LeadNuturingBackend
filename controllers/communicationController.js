@@ -3,6 +3,7 @@ const leadService = require('../services/leadService');
 const messagingService = require('../services/messagingService');
 const Lead = require('../models/Lead');
 const mongoose = require('mongoose');
+const { autoUpdateLeadStatuses } = require('../cron/statusUpdater');
 
 // @desc    Create a new communication log
 // @route   POST /api/communications
@@ -185,6 +186,9 @@ const sendEmailToLead = async (req, res) => {
         });
 
         await leadService.updateLead(leadId, { lastContactDate: new Date() });
+
+        // Run status update after sending email
+        await autoUpdateLeadStatuses();
 
         res.json({ 
             message: 'Email sent successfully',
