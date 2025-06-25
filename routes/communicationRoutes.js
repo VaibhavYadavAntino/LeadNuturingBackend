@@ -20,4 +20,6 @@ router.route('/:id')
   .put(protect, validateObjectId, updateCommunicationLog)
   .delete(protect, validateObjectId, deleteCommunicationLog);
 
+router.post('/send-email', protect, sendEmailToLead);
+
 module.exports = router;

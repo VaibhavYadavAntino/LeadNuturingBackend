@@ -8,11 +8,11 @@ const leadSchema = new mongoose.Schema({
     required: true,
     maxlength: 10,
   },
-  lastContactDate: { type: Date },
+  lastContactDate: { type: Date, required: true },
   status: {
     type: String,
     enum: ['engaged', 'dormant', 'unresponsive'],
-    required: true
+    default: 'engaged'
   },
 }, {
   timestamps: true

@@ -33,9 +33,9 @@ const autoUpdateLeadStatuses = async () => {
   }
 };
 
-//schedule to run every hour
+// Schedule to run once daily at midnight
 const startCronJob = () => {
-  cron.schedule('0 * * * *', autoUpdateLeadStatuses);
+  cron.schedule('0 0 * * *', autoUpdateLeadStatuses);
 };
 
-module.exports = startCronJob;
+module.exports = { startCronJob, autoUpdateLeadStatuses };

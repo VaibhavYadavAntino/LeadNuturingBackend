@@ -8,7 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const leadRoutes = require('./routes/leadRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const adminService = require('./services/adminService');
-const startCronJob=require('./cron/statusUpdater');
+const { startCronJob } = require('./cron/statusUpdater');
 const recentActivityRoutes = require('./routes/recentActivityRoutes');
 
 const app = express();

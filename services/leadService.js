@@ -1,9 +1,24 @@
 const Lead = require('../models/Lead');
 
 const createLead = async (leadData) => {
-  leadData.lastContactDate = new Date();
-  //reverted 
-  
+  // Ensure lastContactDate is provided
+  if (!leadData.lastContactDate) {
+    throw new Error('lastContactDate is required');
+  }
+  const now = new Date();
+  const lastContact = new Date(leadData.lastContactDate);
+  const daysSinceContact = Math.floor((now - lastContact) / (1000 * 60 * 60 * 24));
+
+  let status = 'engaged';
+  if (daysSinceContact > 90) {
+    status = 'unresponsive';
+  } else if (daysSinceContact > 30) {
+    status = 'dormant';
+  }
+
+  // Ignore any status from user input
+  leadData.status = status;
+
   return await Lead.create(leadData);
 };
 
