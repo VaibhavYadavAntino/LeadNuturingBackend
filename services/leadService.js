@@ -17,7 +17,7 @@ const createLead = async (leadData) => {
 };
 
 const getLeads = async () => {
-  return await Lead.find({});
+  return await Lead.find({}).sort({ createdAt: -1 });
 };
 
 const getLeadById = async (id) => {
