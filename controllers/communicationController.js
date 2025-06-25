@@ -153,6 +153,9 @@ const sendEmailToLead = async (req, res) => {
             return res.status(404).json({ message: 'Lead not found' });
         }
 
+        // Store the old status before updating
+        const oldStatus = lead.status;
+
         // Determine message type based on lead status and lastContactDate
         let messageType = 'welcome'; // default
         const now = new Date();
@@ -179,10 +182,12 @@ const sendEmailToLead = async (req, res) => {
             return res.status(500).json({ message: 'Failed to send email' });
         }
 
+        // Log the activity with the old status
         await communicationService.createCommunication({
             lead: leadId,
             channel: 'email',
             message: `Subject: ${template.subject} - Body: ${template.message}`,
+            statusAtActivity: oldStatus
         });
 
         await leadService.updateLead(leadId, { lastContactDate: new Date() });

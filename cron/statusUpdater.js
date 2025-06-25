@@ -1,6 +1,7 @@
 // cron/statusUpdater.js
 const cron = require('node-cron');
 const Lead = require('../models/Lead');
+const RecentActivity = require('../models/RecentActivity');
 
 const autoUpdateLeadStatuses = async () => {
     console.log(`[${new Date().toLocaleTimeString()}]  Cron triggered`);
@@ -13,6 +14,7 @@ const autoUpdateLeadStatuses = async () => {
     for (const lead of leads) {
       const daysSinceContact = Math.floor((now - new Date(lead.lastContactDate)) / (1000 * 60 * 60 * 24));
       let newStatus = null;
+      let oldStatus = lead.status;
 
       if (lead.status === 'engaged' && daysSinceContact > 30) {
         newStatus = 'dormant';
@@ -24,6 +26,14 @@ const autoUpdateLeadStatuses = async () => {
         lead.status = newStatus;
         await lead.save();
         updatedCount++;
+        // Log the status change in RecentActivity
+        await RecentActivity.create({
+          type: 'status_update',
+          lead: lead._id,
+          info: `Status changed from ${oldStatus} to ${newStatus}`,
+          timestamp: new Date(),
+          statusAtActivity: oldStatus
+        });
       }
     }
     console.log(`[${new Date().toLocaleTimeString()}]Cron Job: Updated ${updatedCount} lead statuses`);
