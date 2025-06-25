@@ -79,6 +79,17 @@ const countLeadsInactive30Days = async () => {
   return await Lead.countDocuments({ lastContactDate: { $lt: thirtyDaysAgo } });
 };
 
+const searchLeads = async (query) => {
+  const regex = new RegExp(query, 'i'); 
+  return await Lead.find({
+    $or: [
+      { name: regex },
+      { email: regex },
+      { companyName: regex }
+    ]
+  });
+};
+
 module.exports = {
   createLead,
   getLeads,
@@ -88,4 +99,5 @@ module.exports = {
   fetchLeadStats,
   getLeadsInactive30Days,
   countLeadsInactive30Days,
+  searchLeads,
 }; 

@@ -113,6 +113,16 @@ const countLeadsInactive30Days = async (req, res) => {
   }
 };
 
+const searchLeads = async (req, res) => {
+  try {
+    const query = req.query.query || '';
+    const results = await leadService.searchLeads(query);
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ message: 'Error searching leads', error: error.message });
+  }
+};
+
 module.exports = {
   createLead,
   getLeads,
@@ -122,4 +132,5 @@ module.exports = {
   getLeadsCount,
   getLeadsInactive30Days,
   countLeadsInactive30Days,
+  searchLeads,
 };

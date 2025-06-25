@@ -9,10 +9,11 @@ const {
   getLeadsCount,
   getLeadsInactive30Days,
   countLeadsInactive30Days,
+  searchLeads,
 } = require('../controllers/leadControllers');
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
-
+router.get('/search',protect,searchLeads);
   router.get('/stats/count',protect, getLeadsCount);
 
 router.get('/inactive-30days', protect, getLeadsInactive30Days);
