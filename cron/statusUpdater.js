@@ -23,6 +23,7 @@ const autoUpdateLeadStatuses = async () => {
           type: 'status_update',
           lead: lead._id,
           info: `Status changed from ${oldStatus} to ${newStatus}`,
+          channel: 'system',
           timestamp: new Date(),
           statusAtActivity: oldStatus
         });

@@ -10,6 +10,7 @@ const createCommunication = async (data) => {
     type: 'message',
     lead: log.lead,
     info: `Message sent via ${log.channel}`,
+    channel: log.channel,
     timestamp: log.timestamp,
     statusAtActivity: data.statusAtActivity || lead.status
   });
