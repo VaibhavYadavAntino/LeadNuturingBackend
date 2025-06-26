@@ -18,7 +18,12 @@ const createLead = async (req, res) => {
 // @access  Private
 const getLeads = async (req, res) => {
   try {
-    const leads = await leadService.getLeads();
+    const { status } = req.query;
+    const filter = {};
+    if (status && status.toLowerCase() !== 'all') {
+      filter.status = status.toLowerCase();
+    }
+    const leads = await leadService.getLeadsWithFilter(filter);
     res.json(leads);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

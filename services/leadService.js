@@ -20,6 +20,10 @@ const getLeads = async () => {
   return await Lead.find({}).sort({ createdAt: -1 });
 };
 
+const getLeadsWithFilter = async (filter = {}) => {
+  return await Lead.find(filter).sort({ createdAt: -1 });
+};
+
 const getLeadById = async (id) => {
   return await Lead.findById(id);
 };
@@ -82,6 +86,7 @@ const searchLeads = async (query) => {
 module.exports = {
   createLead,
   getLeads,
+  getLeadsWithFilter,
   getLeadById,
   updateLead,
   deleteLead,
