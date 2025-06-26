@@ -18,7 +18,10 @@ const createCommunication = async (data) => {
 };
 
 const getCommunications = async (filter = {}) => {
-  return await Communication.find(filter).populate('lead').populate('admin');
+  return await Communication.find(filter)
+    .sort({ timestamp: -1 }) // Newest first
+    .populate('lead')
+    .populate('admin');
 };
 
 const getCommunicationById = async (id) => {
