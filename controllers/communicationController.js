@@ -20,6 +20,10 @@ const createCommunicationLog = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(leadId)) {
         return res.status(400).json({ message: 'Invalid Lead ID format' });
     }
+    // Restrict logging for email and whatsapp channels
+    if (req.body.channel === 'email' || req.body.channel === 'whatsapp') {
+      return res.status(400).json({ message: 'Direct logging of email or WhatsApp communications is not allowed. Use the appropriate send-email or send-whatsapp endpoint.' });
+    }
     const leadExists = await Lead.findById(leadId);
     if (!leadExists) {
       return res.status(404).json({ message: 'Lead not found' });
