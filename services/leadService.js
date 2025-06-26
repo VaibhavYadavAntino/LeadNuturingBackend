@@ -87,15 +87,11 @@ const searchLeads = async (query, statusFilter = []) => {
     dbQuery.status = { $in: statusFilter };
   }
 
-  return await Lead.find(dbQuery);
+  return await Lead.find(dbQuery).sort({ createdAt: -1 });
 };
-
-
 
 module.exports = {
   createLead,
-  getLeads,
-  getLeadsWithFilter,
   getLeadById,
   updateLead,
   deleteLead,

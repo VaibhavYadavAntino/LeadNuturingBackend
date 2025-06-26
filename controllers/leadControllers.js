@@ -18,12 +18,11 @@ const createLead = async (req, res) => {
 // @access  Private
 const getLeads = async (req, res) => {
   try {
-    const { status } = req.query;
-    const filter = {};
-    if (status && status.toLowerCase() !== 'all') {
-      filter.status = status.toLowerCase();
-    }
-    const leads = await leadService.getLeadsWithFilter(filter);
+    const statusFilter = req.query.status && req.query.status.toLowerCase() !== 'all'
+      ? [req.query.status.toLowerCase()]
+      : [];
+    // For 'get all', searchQuery is empty string, statusFilter is []
+    const leads = await leadService.searchLeads('', statusFilter);
     res.json(leads);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
