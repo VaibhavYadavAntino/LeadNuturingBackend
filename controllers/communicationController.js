@@ -177,7 +177,16 @@ const sendWhatsAppToLead = async (req, res) => {
             messageType = 'reminder';
         }
         const message = whatsappTemplates[messageType];
-        const result = await whatsappService.sendWhatsApp(lead.phone, message);
+        let result;
+        try {
+            result = await whatsappService.sendWhatsApp(lead.phone, message);
+        } catch (error) {
+            return res.status(500).json({ message: 'Failed to send WhatsApp', error: error.message });
+        }
+        // Check for success (adjust this check if your API returns a different success indicator)
+        if (!result || result.success === false || result.sent === false) {
+            return res.status(500).json({ message: 'Failed to send WhatsApp', result });
+        }
         await communicationService.createCommunication({
             lead: leadId,
             channel: 'whatsapp',
