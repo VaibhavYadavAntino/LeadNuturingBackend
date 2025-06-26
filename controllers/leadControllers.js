@@ -120,14 +120,17 @@ const countLeadsInactive30Days = async (req, res) => {
 
 const searchLeads = async (req, res) => {
   try {
-    const query = req.query.query || '';
-    const results = await leadService.searchLeads(query);
+    const searchQuery = req.query.query || '';
+    const statusFilter = req.query.status
+      ? req.query.status.split(',')  // support comma-separated status like ?status=engaged,dormant
+      : [];
+
+    const results = await leadService.searchLeads(searchQuery, statusFilter);
     res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: 'Error searching leads', error: error.message });
   }
 };
-
 module.exports = {
   createLead,
   getLeads,

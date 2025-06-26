@@ -72,16 +72,25 @@ const countLeadsInactive30Days = async () => {
   });
 };
 
-const searchLeads = async (query) => {
-  const regex = new RegExp(query, 'i'); 
-  return await Lead.find({
+const searchLeads = async (query, statusFilter = []) => {
+  const regex = new RegExp(query, 'i');
+
+  const dbQuery = {
     $or: [
       { name: regex },
       { email: regex },
       { companyName: regex }
     ]
-  });
+  };
+
+  if (statusFilter.length > 0) {
+    dbQuery.status = { $in: statusFilter };
+  }
+
+  return await Lead.find(dbQuery);
 };
+
+
 
 module.exports = {
   createLead,
@@ -94,4 +103,4 @@ module.exports = {
   getLeadsInactive30Days,
   countLeadsInactive30Days,
   searchLeads,
-}; 
+};

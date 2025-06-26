@@ -1,7 +1,7 @@
 {
   "name": "lead-nuturing-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js/Express backend for managing leads, communications, and recent activities, with automated status updates and admin authentication.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -26,5 +26,13 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaibhavYadavAntino/LeadNuturingBackend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VaibhavYadavAntino/LeadNuturingBackend/issues"
+  },
+  "homepage": "https://github.com/VaibhavYadavAntino/LeadNuturingBackend#readme"
 }
