@@ -55,15 +55,17 @@ const fetchLeadStats = async () => {
 };
 
 const getLeadsInactive30Days = async () => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  return await Lead.find({ lastContactDate: { $lt: thirtyDaysAgo } });
+  // Get leads that are dormant or unresponsive (these are inactive)
+  return await Lead.find({ 
+    status: { $in: ['dormant', 'unresponsive'] } 
+  }).sort({ lastContactDate: 1 });
 };
 
 const countLeadsInactive30Days = async () => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  return await Lead.countDocuments({ lastContactDate: { $lt: thirtyDaysAgo } });
+  // Count leads that are dormant or unresponsive
+  return await Lead.countDocuments({ 
+    status: { $in: ['dormant', 'unresponsive'] } 
+  });
 };
 
 const searchLeads = async (query) => {
