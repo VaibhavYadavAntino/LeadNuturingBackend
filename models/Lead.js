@@ -14,6 +14,7 @@ const leadSchema = new mongoose.Schema({
     enum: ['engaged', 'dormant', 'unresponsive'],
     default: 'engaged'
   },
+  companyName: { type: String, required: true },
 }, {
   timestamps: true
 });
