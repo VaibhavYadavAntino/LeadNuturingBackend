@@ -137,7 +137,7 @@ const sendEmailToLead = async (req, res) => {
             message: `Subject: ${template.subject} - Body: ${template.message}`,
             statusAtActivity: oldStatus
         });
-        await leadService.updateLead(leadId, { lastContactDate: new Date() });
+        await leadService.updateLead(leadId, { lastContactDate: new Date(), companyName: lead.companyName });
         await autoUpdateLeadStatuses();
         res.json({ 
             message: 'Email sent successfully',
@@ -184,7 +184,7 @@ const sendWhatsAppToLead = async (req, res) => {
             message: message,
             statusAtActivity: lead.status
         });
-        await leadService.updateLead(leadId, { lastContactDate: new Date() });
+        await leadService.updateLead(leadId, { lastContactDate: new Date(), companyName: lead.companyName });
         await autoUpdateLeadStatuses();
         res.json({ message: 'WhatsApp sent successfully', result });
     } catch (error) {
