@@ -33,11 +33,23 @@ const updateLead = async (id, leadData) => {
   if (!lead) {
     return null;
   }
-  Object.assign(lead, leadData);
-  if (leadData.lastContactDate) {
-    lead.lastContactDate = new Date();
-    lead.status = getLeadStatus(lead.lastContactDate);
+  
+  // Only update lastContactDate and recalculate status if it's explicitly provided
+  // and it's different from the current value
+  if (leadData.lastContactDate !== undefined) {
+    const newLastContactDate = new Date(leadData.lastContactDate);
+    const currentLastContactDate = new Date(lead.lastContactDate);
+    
+    // Only update if the dates are different
+    if (newLastContactDate.getTime() !== currentLastContactDate.getTime()) {
+      lead.lastContactDate = newLastContactDate;
+      lead.status = getLeadStatus(lead.lastContactDate);
+    }
+    // Remove lastContactDate from leadData to prevent double assignment
+    delete leadData.lastContactDate;
   }
+  
+  Object.assign(lead, leadData);
   return await lead.save();
 };
 
