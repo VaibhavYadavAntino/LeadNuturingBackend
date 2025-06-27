@@ -108,6 +108,27 @@ const getLeadsInactive30Days = async (req, res) => {
   }
 };
 
+const getLeadsInactive30DaysPaginated = async (req, res) => {
+  try {
+    // Get pagination parameters from query
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    // Validate pagination parameters
+    if (page < 1) {
+      return res.status(400).json({ message: 'Page number must be greater than 0' });
+    }
+    if (limit < 1 || limit > 100) {
+      return res.status(400).json({ message: 'Limit must be between 1 and 100' });
+    }
+    
+    const result = await leadService.getLeadsInactive30DaysPaginated(page, limit);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 const countLeadsInactive30Days = async (req, res) => {
   try {
     const count = await leadService.countLeadsInactive30Days();
@@ -138,6 +159,7 @@ module.exports = {
   deleteLead,
   getLeadsCount,
   getLeadsInactive30Days,
+  getLeadsInactive30DaysPaginated,
   countLeadsInactive30Days,
   searchLeads,
 };
