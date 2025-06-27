@@ -12,8 +12,16 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
 
+//  Import validators
+const {
+  validateSendEmail,
+  validateSendWhatsApp,
+  validateCreateCommunicationLog
+} = require('../validators/communicationValidator');
+const { handleValidationErrors } = require('../validators/handleValidation');
+
 router.route('/')
-  .post(protect, createCommunicationLog)
+  .post(protect, validateCreateCommunicationLog, handleValidationErrors, createCommunicationLog)
   .get(protect, getAllCommunicationLogs);
 
 router.route('/:id')
@@ -21,7 +29,7 @@ router.route('/:id')
   .put(protect, validateObjectId, updateCommunicationLog)
   .delete(protect, validateObjectId, deleteCommunicationLog);
 
-router.post('/send-email', protect, sendEmailToLead);
-router.post('/send-whatsapp', protect, sendWhatsAppToLead);
+router.post('/send-email', protect, validateSendEmail, handleValidationErrors, sendEmailToLead);
+router.post('/send-whatsapp', protect, validateSendWhatsApp, handleValidationErrors, sendWhatsAppToLead);
 
 module.exports = router;

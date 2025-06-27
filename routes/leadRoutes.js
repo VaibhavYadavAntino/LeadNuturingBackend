@@ -30,7 +30,7 @@ router.route('/').post(protect,validateCreateLead,handleValidationErrors, create
 router
   .route('/:id')
   .get(protect, validateObjectId, getLeadById)
-  .put(protect, validateObjectId, updateLead)
+  .put(protect, validateCreateLead,handleValidationErrors,validateObjectId, updateLead)
   .delete(protect, validateObjectId, deleteLead);
 
 module.exports = router;
