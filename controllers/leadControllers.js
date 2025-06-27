@@ -29,6 +29,36 @@ const getLeads = async (req, res) => {
   }
 };
 
+// @desc    Get all leads with pagination and filters
+// @route   GET /api/leads/paginated
+// @access  Private
+const getLeadsPaginated = async (req, res) => {
+  try {
+    // Get pagination parameters from query
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    // Get filter parameters
+    const searchQuery = req.query.query || req.query.search || '';
+    const statusFilter = req.query.status 
+      ? req.query.status.split(',').map(s => s.toLowerCase())
+      : [];
+    
+    // Validate pagination parameters
+    if (page < 1) {
+      return res.status(400).json({ message: 'Page number must be greater than 0' });
+    }
+    if (limit < 1 || limit > 100) {
+      return res.status(400).json({ message: 'Limit must be between 1 and 100' });
+    }
+    
+    const result = await leadService.getLeadsPaginated(page, limit, searchQuery, statusFilter);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 // @desc    Get lead by ID
 // @route   GET /api/leads/:id
 // @access  Private
@@ -154,6 +184,7 @@ const searchLeads = async (req, res) => {
 module.exports = {
   createLead,
   getLeads,
+  getLeadsPaginated,
   getLeadById,
   updateLead,
   deleteLead,

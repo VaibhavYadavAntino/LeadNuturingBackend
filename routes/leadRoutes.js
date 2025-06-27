@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createLead,
   getLeads,
+  getLeadsPaginated,
   getLeadById,
   updateLead,
   deleteLead,
@@ -15,7 +16,8 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
 router.get('/search',protect,searchLeads);
-  router.get('/stats/count',protect, getLeadsCount);
+router.get('/paginated', protect, getLeadsPaginated);
+router.get('/stats/count',protect, getLeadsCount);
 
 router.get('/inactive-30days', protect, getLeadsInactive30Days);
 router.get('/inactive-30days/paginated', protect, getLeadsInactive30DaysPaginated);

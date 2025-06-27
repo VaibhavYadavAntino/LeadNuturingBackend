@@ -20,6 +20,55 @@ const getLeads = async () => {
   return await Lead.find({}).sort({ createdAt: -1 });
 };
 
+const getLeadsPaginated = async (page = 1, limit = 10, searchQuery = '', statusFilter = []) => {
+  const skip = (page - 1) * limit;
+  
+  // Build query based on filters
+  const query = {};
+  
+  // Add search filter if provided
+  if (searchQuery && searchQuery.trim() !== '') {
+    const regex = new RegExp(searchQuery, 'i');
+    query.$or = [
+      { name: regex },
+      { email: regex },
+      { companyName: regex }
+    ];
+  }
+  
+  // Add status filter if provided
+  if (statusFilter && statusFilter.length > 0) {
+    query.status = { $in: statusFilter };
+  }
+  
+  // Get leads with pagination and filters
+  const leads = await Lead.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+  
+  // Get total count for pagination metadata
+  const totalItems = await Lead.countDocuments(query);
+  
+  const totalPages = Math.ceil(totalItems / limit);
+  
+  return {
+    leads,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalItems,
+      itemsPerPage: limit,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    },
+    filters: {
+      searchQuery,
+      statusFilter
+    }
+  };
+};
+
 const getLeadsWithFilter = async (filter = {}) => {
   return await Lead.find(filter).sort({ createdAt: -1 });
 };
@@ -143,4 +192,5 @@ module.exports = {
   getLeadsInactive30DaysPaginated,
   countLeadsInactive30Days,
   searchLeads,
+  getLeadsPaginated,
 };
