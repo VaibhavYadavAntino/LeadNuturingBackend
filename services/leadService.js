@@ -133,9 +133,12 @@ const getLeadsInactive30Days = async () => {
 const getLeadsInactive30DaysPaginated = async (page = 1, limit = 10) => {
   const skip = (page - 1) * limit;
   
-  // Get inactive leads with pagination
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  // Get inactive leads with pagination based on lastContactDate
   const leads = await Lead.find({ 
-    status: { $in: ['dormant', 'unresponsive'] } 
+    lastContactDate: { $lte: thirtyDaysAgo } 
   })
   .sort({ lastContactDate: 1 })
   .skip(skip)
@@ -143,7 +146,7 @@ const getLeadsInactive30DaysPaginated = async (page = 1, limit = 10) => {
   
   // Get total count for pagination metadata
   const totalItems = await Lead.countDocuments({ 
-    status: { $in: ['dormant', 'unresponsive'] } 
+    lastContactDate: { $lte: thirtyDaysAgo } 
   });
   
   const totalPages = Math.ceil(totalItems / limit);
@@ -162,9 +165,12 @@ const getLeadsInactive30DaysPaginated = async (page = 1, limit = 10) => {
 };
 
 const countLeadsInactive30Days = async () => {
-  // Count leads that are dormant or unresponsive
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  // Count leads where lastContactDate is more than 30 days ago
   return await Lead.countDocuments({ 
-    status: { $in: ['dormant', 'unresponsive'] } 
+    lastContactDate: { $lte: thirtyDaysAgo } 
   });
 };
 
