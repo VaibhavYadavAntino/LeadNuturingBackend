@@ -79,32 +79,35 @@ const getLeadById = async (id) => {
 
 
 const updateLead = async (id, leadData) => {
-  // Check if lead exists
   const existingLead = await Lead.findById(id);
   if (!existingLead) return null;
 
   if (leadData.email && leadData.email !== existingLead.email) {
     const existingEmail = await Lead.findOne({ email: leadData.email });
     if (existingEmail && existingEmail._id.toString() !== id) {
-      throw new Error('Email already exists for another lead.');
+      const err = new Error('Email already exists for another lead.');
+      err.name = 'DuplicateEmail';
+      throw err;
     }
   }
 
   if (leadData.lastContactDate) {
     leadData.status = getLeadStatus(leadData.lastContactDate);
   }
+
   const updatedLead = await Lead.findByIdAndUpdate(
     id,
-    { $set: leadData }, 
+    { $set: leadData },
     {
       new: true,
       runValidators: true,
-      context: 'query', 
+      context: 'query',
     }
   );
 
   return updatedLead;
 };
+
 
 
 

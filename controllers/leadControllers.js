@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const leadService = require('../services/leadService');
 
-// @desc    Create a new lead
-// @route   POST /api/leads
-// @access  Private
+
 const createLead = async (req, res) => {
   try {
     const lead = await leadService.createLead(req.body);
@@ -13,9 +11,7 @@ const createLead = async (req, res) => {
   }
 };
 
-// @desc    Get all leads
-// @route   GET /api/leads
-// @access  Private
+
 const getLeads = async (req, res) => {
   try {
     const statusFilter = req.query.status && req.query.status.toLowerCase() !== 'all'
@@ -29,9 +25,7 @@ const getLeads = async (req, res) => {
   }
 };
 
-// @desc    Get all leads with pagination and filters
-// @route   GET /api/leads/paginated
-// @access  Private
+
 const getLeadsPaginated = async (req, res) => {
   try {
     // Get pagination parameters from query
@@ -59,9 +53,7 @@ const getLeadsPaginated = async (req, res) => {
   }
 };
 
-// @desc    Get lead by ID
-// @route   GET /api/leads/:id
-// @access  Private
+
 const getLeadById = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ message: 'Invalid lead ID' });
@@ -78,28 +70,31 @@ const getLeadById = async (req, res) => {
   }
 };
 
-// @desc    Update a lead
-// @route   PUT /api/leads/:id
-// @access  Private
 const updateLead = async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).json({ message: 'Invalid lead ID' });
-  }
   try {
-    const updatedLead = await leadService.updateLead(req.params.id, req.body);
-    if (updatedLead) {
-      res.json(updatedLead);
-    } else {
-      res.json({ message: 'Lead not found' });
+    const updated = await leadService.updateLead(req.params.id, req.body);
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Lead not found' });
     }
+
+    res.status(200).json(updated);
   } catch (error) {
-    res.status(400).json({ message: 'Error updating lead', error: error.message });
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ message: 'Validation failed', errors });
+    }
+
+    if (error.name === 'DuplicateEmail') {
+      return res.status(400).json({ message: error.message });
+    }
+
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// @desc    Delete a lead
-// @route   DELETE /api/leads/:id
-// @access  Private
+
+
 const deleteLead = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ message: 'Invalid lead ID' });
@@ -172,7 +167,7 @@ const searchLeads = async (req, res) => {
   try {
     const searchQuery = req.query.query || '';
     const statusFilter = req.query.status
-      ? req.query.status.split(',')  // support comma-separated status like ?status=engaged,dormant
+      ? req.query.status.split(',')  
       : [];
 
     const results = await leadService.searchLeads(searchQuery, statusFilter);
