@@ -77,30 +77,36 @@ const getLeadById = async (id) => {
   return await Lead.findById(id);
 };
 
+
 const updateLead = async (id, leadData) => {
-  const lead = await Lead.findById(id);
-  if (!lead) {
-    return null;
-  }
-  
-  // Only update lastContactDate and recalculate status if it's explicitly provided
-  // and it's different from the current value
-  if (leadData.lastContactDate !== undefined) {
-    const newLastContactDate = new Date(leadData.lastContactDate);
-    const currentLastContactDate = new Date(lead.lastContactDate);
-    
-    // Only update if the dates are different
-    if (newLastContactDate.getTime() !== currentLastContactDate.getTime()) {
-      lead.lastContactDate = newLastContactDate;
-      lead.status = getLeadStatus(lead.lastContactDate);
+  // Check if lead exists
+  const existingLead = await Lead.findById(id);
+  if (!existingLead) return null;
+
+  if (leadData.email && leadData.email !== existingLead.email) {
+    const existingEmail = await Lead.findOne({ email: leadData.email });
+    if (existingEmail && existingEmail._id.toString() !== id) {
+      throw new Error('Email already exists for another lead.');
     }
-    // Remove lastContactDate from leadData to prevent double assignment
-    delete leadData.lastContactDate;
   }
-  
-  Object.assign(lead, leadData);
-  return await lead.save();
+
+  if (leadData.lastContactDate) {
+    leadData.status = getLeadStatus(leadData.lastContactDate);
+  }
+  const updatedLead = await Lead.findByIdAndUpdate(
+    id,
+    { $set: leadData }, 
+    {
+      new: true,
+      runValidators: true,
+      context: 'query', 
+    }
+  );
+
+  return updatedLead;
 };
+
+
 
 const deleteLead = async (id) => {
     const lead = await Lead.findById(id);
