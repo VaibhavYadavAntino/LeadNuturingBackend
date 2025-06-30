@@ -15,7 +15,7 @@ const {
 } = require('../controllers/leadControllers');
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
-const { validateCreateLead } = require('../validators/leadValidator');
+const { validateCreateLead, validateUpdateLead } = require('../validators/leadValidator');
 const { handleValidationErrors } = require('../validators/handleValidation');
 
 router.get('/search',protect,searchLeads);
@@ -30,7 +30,7 @@ router.route('/').post(protect,validateCreateLead,handleValidationErrors, create
 router
   .route('/:id')
   .get(protect, validateObjectId, getLeadById)
-  .put(protect, validateCreateLead,handleValidationErrors,validateObjectId, updateLead)
+  .put(protect, validateObjectId, validateUpdateLead, handleValidationErrors, updateLead)
   .delete(protect, validateObjectId, deleteLead);
 
 module.exports = router;
