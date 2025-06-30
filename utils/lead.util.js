@@ -5,7 +5,6 @@ function getLeadStatus(lastContactDate) {
   if (days <= 60) return 'engaged';
   if (days > 60 && days <= 90) return 'dormant';
   if (days > 90) return 'unresponsive';
-  return null;
 }
 
 module.exports = { getLeadStatus };

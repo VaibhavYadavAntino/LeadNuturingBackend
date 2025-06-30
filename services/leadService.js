@@ -120,11 +120,15 @@ const fetchLeadStats = async () => {
 };
 
 const getLeadsInactive30Days = async () => {
-  // Get leads that are dormant or unresponsive (these are inactive)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  // Find leads where lastContactDate is more than 30 days ago
   return await Lead.find({ 
-    status: { $in: ['dormant', 'unresponsive'] } 
+    lastContactDate: { $lte: thirtyDaysAgo } 
   }).sort({ lastContactDate: 1 });
 };
+
 
 const getLeadsInactive30DaysPaginated = async (page = 1, limit = 10) => {
   const skip = (page - 1) * limit;
