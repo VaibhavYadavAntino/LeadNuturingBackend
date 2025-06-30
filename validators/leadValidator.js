@@ -1,4 +1,6 @@
 const { body } = require('express-validator');
+const Lead = require('../models/Lead');
+
 
 const validateCreateLead = [
   body('name')
@@ -6,7 +8,13 @@ const validateCreateLead = [
 
   body('email')
     .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Invalid email format'),
+    .isEmail().withMessage('Invalid email format')
+    .custom(async (email) => {
+      const existing = await Lead.findOne({ email });
+      if (existing) {
+        throw new Error('Email already exists for another lead');
+      }
+    }),
 
   body('phone')
     .notEmpty().withMessage('Phone number is required')
