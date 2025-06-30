@@ -12,7 +12,9 @@ const validateCreateLead = [
     }),
   body('phone')
     .notEmpty().withMessage('Phone is required')
-    .isLength({ min: 10, max: 10 }).withMessage('Phone must be 10 digits'),
+    .isLength({ min: 10, max: 10 }).withMessage('Phone must be 10 digits')
+    .isNumeric().withMessage('Phone must be in numeric'),
+
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
