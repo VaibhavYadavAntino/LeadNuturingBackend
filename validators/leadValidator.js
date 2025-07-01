@@ -1,6 +1,5 @@
 const { body } = require('express-validator');
 const Lead = require('../models/Lead');
-const moment = require('moment');
 
 const validateCreateLead = [
   body('name').notEmpty().withMessage('Name is required'),
@@ -19,18 +18,11 @@ const validateCreateLead = [
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
+    .isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
-      let date;
-      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        date = new Date(value);
-      } else if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
-        date = moment(value, 'DD-MM-YYYY').toDate();
-      } else {
-        throw new Error('Invalid date format. Use YYYY-MM-DD or DD-MM-YYYY');
-      }
       const today = new Date();
-      today.setHours(23, 59, 59, 999);
-      if (date > today) {
+      today.setHours(23, 59, 59, 999); // End of today
+      if (value > today) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
@@ -63,18 +55,11 @@ const validateUpdateLead = [
 
   body('lastContactDate')
     .optional()
+    .isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
-      let date;
-      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        date = new Date(value);
-      } else if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
-        date = moment(value, 'DD-MM-YYYY').toDate();
-      } else {
-        throw new Error('Invalid date format. Use YYYY-MM-DD or DD-MM-YYYY');
-      }
       const today = new Date();
-      today.setHours(23, 59, 59, 999);
-      if (date > today) {
+      today.setHours(23, 59, 59, 999); // End of today
+      if (value > today) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
