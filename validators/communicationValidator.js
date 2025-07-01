@@ -6,7 +6,7 @@ const validateSendEmail = [
 
 const validateSendWhatsApp = [
   body('leadId').notEmpty().withMessage('leadId is required'),
-  body('message').notEmpty().withMessage('Message content is required'),
+  // No message validation here; message will be picked from template
 ];
 
 const validateCreateCommunicationLog = [
