@@ -19,7 +19,7 @@ const { validateCreateLead, validateUpdateLead } = require('../validators/leadVa
 const { handleValidationErrors } = require('../validators/handleValidation');
 
 router.get('/search',protect,searchLeads);
-router.get('/paginated', protect, getLeadsPaginated);
+router.post('/paginated', protect, getLeadsPaginated);
 router.get('/stats/count',protect, getLeadsCount);
 
 router.get('/inactive-30days', protect, getLeadsInactive30Days);

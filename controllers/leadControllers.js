@@ -28,14 +28,14 @@ const getLeads = async (req, res) => {
 
 const getLeadsPaginated = async (req, res) => {
   try {
-    // Get pagination parameters from query
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    // Get pagination parameters from body
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 10;
     
     // Get filter parameters
-    const searchQuery = req.query.query || req.query.search || '';
-    const statusFilter = req.query.status 
-      ? req.query.status.split(',').map(s => s.toLowerCase())
+    const searchQuery = req.body.query || req.body.search || '';
+    const statusFilter = req.body.status 
+      ? (Array.isArray(req.body.status) ? req.body.status.map(s => s.toLowerCase()) : req.body.status.split(',').map(s => s.toLowerCase()))
       : [];
     
     // Validate pagination parameters
