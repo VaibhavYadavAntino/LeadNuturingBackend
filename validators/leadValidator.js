@@ -18,7 +18,6 @@ const validateCreateLead = [
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
-    .isISO8601().toDate().withMessage('Invalid date format'),
 ];
 
 
