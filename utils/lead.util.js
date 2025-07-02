@@ -1,15 +1,13 @@
 function getLeadStatus(lastContactDate) {
-  // Use India timezone (IST - UTC+5:30)
   const now = new Date();
   const lastContact = new Date(lastContactDate);
   
-  // Convert to IST for accurate day calculation
-  const istNow = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-  const istLastContact = new Date(lastContact.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-  
-  const days = Math.floor((istNow - istLastContact) / (1000 * 60 * 60 * 24));
+  // Calculate days difference using UTC to avoid timezone issues
+  const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const utcLastContact = Date.UTC(lastContact.getFullYear(), lastContact.getMonth(), lastContact.getDate());
+  const days = Math.floor((utcNow - utcLastContact) / (1000 * 60 * 60 * 24));
 
-  console.log(`[DEBUG] getLeadStatus: lastContactDate=${lastContactDate}, istLastContact=${istLastContact}, istNow=${istNow}, days=${days}`);
+  console.log(`[DEBUG] getLeadStatus: lastContactDate=${lastContactDate}, lastContact=${lastContact}, now=${now}, days=${days}`);
 
   if (days <= 60) return 'engaged';
   if (days > 60 && days <= 90) return 'dormant';

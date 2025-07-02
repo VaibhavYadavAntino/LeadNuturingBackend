@@ -11,24 +11,18 @@ const createLead = async (leadData) => {
   
   // If the provided date is today, use current time instead
   const providedDate = new Date(Number(leadData.lastContactDate));
-  
-  // Use India timezone (IST - UTC+5:30)
   const now = new Date();
-  const istNow = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-  const istProvidedDate = new Date(providedDate.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   
-  // Reset time to start of day for comparison (using IST)
-  const providedDateOnly = new Date(istProvidedDate.getFullYear(), istProvidedDate.getMonth(), istProvidedDate.getDate());
-  const todayOnly = new Date(istNow.getFullYear(), istNow.getMonth(), istNow.getDate());
+  // Compare dates using UTC to avoid timezone issues
+  const utcProvided = Date.UTC(providedDate.getFullYear(), providedDate.getMonth(), providedDate.getDate());
+  const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   
-  console.log(`[DEBUG] createLead: providedDate=${providedDate}, istNow=${istNow}, providedDateOnly=${providedDateOnly}, todayOnly=${todayOnly}`);
+  console.log(`[DEBUG] createLead: providedDate=${providedDate}, now=${now}, utcProvided=${utcProvided}, utcNow=${utcNow}`);
   
-  // If it's today's date, use current IST time
-  if (providedDateOnly.getTime() === todayOnly.getTime()) {
-    // Create current time in IST
-    const currentIST = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-    leadData.lastContactDate = currentIST;
-    console.log(`[DEBUG] createLead: Using current IST time for today's lead: ${leadData.lastContactDate}`);
+  // If it's today's date, use current time
+  if (utcProvided === utcNow) {
+    leadData.lastContactDate = new Date();
+    console.log(`[DEBUG] createLead: Using current time for today's lead: ${leadData.lastContactDate}`);
   }
   
   // Use utility for status
