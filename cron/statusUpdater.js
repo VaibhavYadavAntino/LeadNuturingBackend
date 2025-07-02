@@ -4,8 +4,8 @@ const RecentActivity = require('../models/RecentActivity');
 const { getLeadStatus } = require('../utils/lead.util');
 
 const autoUpdateLeadStatuses = async () => {
-  console.log(`[${new Date().toISOString()}]  Cron triggered`);
-  console.log(`[${new Date().toISOString()}]  Checking lead statuses...`);
+  console.log(`[${new Date().toLocaleTimeString()}]  Cron triggered`);
+  console.log(`[${new Date().toLocaleTimeString()}]  Checking lead statuses...`);
 
   try {
     const leads = await Lead.find({});
@@ -14,8 +14,6 @@ const autoUpdateLeadStatuses = async () => {
     for (const lead of leads) {
       const oldStatus = lead.status;
       const newStatus = getLeadStatus(lead.lastContactDate);
-
-      console.log(`[DEBUG] Lead ${lead._id}: oldStatus=${oldStatus}, newStatus=${newStatus}, lastContactDate=${lead.lastContactDate}`);
 
       // Only update if newStatus is not null and has changed
       if (newStatus && oldStatus !== newStatus) {
@@ -35,7 +33,7 @@ const autoUpdateLeadStatuses = async () => {
       }
     }
 
-    console.log(`[${new Date().toISOString()}] Cron Job: Updated ${updatedCount} lead statuses`);
+    console.log(`[${new Date().toLocaleTimeString()}] Cron Job: Updated ${updatedCount} lead statuses`);
 
   } catch (err) {
     console.error('Cron Job Error:', err.message);

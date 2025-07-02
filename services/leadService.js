@@ -8,23 +8,6 @@ const createLead = async (leadData) => {
   if (!leadData.lastContactDate) {
     throw new Error('lastContactDate is required');
   }
-  
-  // If the provided date is today, use current time instead
-  const providedDate = new Date(Number(leadData.lastContactDate));
-  const now = new Date();
-  
-  // Compare dates using UTC to avoid timezone issues
-  const utcProvided = Date.UTC(providedDate.getFullYear(), providedDate.getMonth(), providedDate.getDate());
-  const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  
-  console.log(`[DEBUG] createLead: providedDate=${providedDate}, now=${now}, utcProvided=${utcProvided}, utcNow=${utcNow}`);
-  
-  // If it's today's date, use current time
-  if (utcProvided === utcNow) {
-    leadData.lastContactDate = new Date();
-    console.log(`[DEBUG] createLead: Using current time for today's lead: ${leadData.lastContactDate}`);
-  }
-  
   // Use utility for status
   leadData.status = getLeadStatus(leadData.lastContactDate);
   const lead = await Lead.create(leadData);

@@ -18,15 +18,11 @@ const validateCreateLead = [
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
+    .isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
-      const inputDate = new Date(Number(value));
       const today = new Date();
-      
-      // Reset time to start of day for comparison
-      const inputDateOnly = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
-      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      
-      if (inputDateOnly > todayOnly) {
+      today.setHours(23, 59, 59, 999); // End of today
+      if (value > today) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
@@ -59,15 +55,11 @@ const validateUpdateLead = [
 
   body('lastContactDate')
     .optional()
+    .isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
-      const inputDate = new Date(Number(value));
       const today = new Date();
-      
-      // Reset time to start of day for comparison
-      const inputDateOnly = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
-      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      
-      if (inputDateOnly > todayOnly) {
+      today.setHours(23, 59, 59, 999); // End of today
+      if (value > today) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
