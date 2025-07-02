@@ -4,8 +4,10 @@ const RecentActivity = require('../models/RecentActivity');
 const { getLeadStatus } = require('../utils/lead.util');
 
 const autoUpdateLeadStatuses = async () => {
-  console.log(`[${new Date().toLocaleTimeString()}]  Cron triggered`);
-  console.log(`[${new Date().toLocaleTimeString()}]  Checking lead statuses...`);
+  // Use India timezone for logging
+  const istTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
+  console.log(`[${istTime}]  Cron triggered`);
+  console.log(`[${istTime}]  Checking lead statuses...`);
 
   try {
     const leads = await Lead.find({});
@@ -33,16 +35,18 @@ const autoUpdateLeadStatuses = async () => {
       }
     }
 
-    console.log(`[${new Date().toLocaleTimeString()}] Cron Job: Updated ${updatedCount} lead statuses`);
+    console.log(`[${istTime}] Cron Job: Updated ${updatedCount} lead statuses`);
 
   } catch (err) {
     console.error('Cron Job Error:', err.message);
   }
 };
 
-// Schedule to run daily at midnight
+// Schedule to run daily at midnight IST
 const startCronJob = () => {
-  cron.schedule('0 0 * * *', autoUpdateLeadStatuses);
+  cron.schedule('0 0 * * *', autoUpdateLeadStatuses, {
+    timezone: "Asia/Kolkata"
+  });
 };
 
 module.exports = { startCronJob, autoUpdateLeadStatuses };
