@@ -18,7 +18,6 @@ const validateCreateLead = [
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
-    .isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
       const today = new Date();
       today.setHours(23, 59, 59, 999); // End of today
@@ -55,7 +54,8 @@ const validateUpdateLead = [
 
   body('lastContactDate')
     .optional()
-    .isISO8601().toDate().withMessage('Invalid date format')
+    .notEmpty().withMessage('Last contact date is required')
+    //.isISO8601().toDate().withMessage('Invalid date format')
     .custom((value) => {
       const today = new Date();
       today.setHours(23, 59, 59, 999); // End of today
