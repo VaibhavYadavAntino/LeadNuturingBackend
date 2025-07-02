@@ -8,6 +8,20 @@ const createLead = async (leadData) => {
   if (!leadData.lastContactDate) {
     throw new Error('lastContactDate is required');
   }
+  
+  // If the provided date is today, use current time instead
+  const providedDate = new Date(Number(leadData.lastContactDate));
+  const today = new Date();
+  
+  // Reset time to start of day for comparison
+  const providedDateOnly = new Date(providedDate.getFullYear(), providedDate.getMonth(), providedDate.getDate());
+  const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
+  // If it's today's date, use current time
+  if (providedDateOnly.getTime() === todayOnly.getTime()) {
+    leadData.lastContactDate = new Date();
+  }
+  
   // Use utility for status
   leadData.status = getLeadStatus(leadData.lastContactDate);
   const lead = await Lead.create(leadData);
