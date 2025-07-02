@@ -19,11 +19,14 @@ const validateCreateLead = [
   body('lastContactDate')
     .notEmpty().withMessage('Last contact date is required')
     .custom((value) => {
-      const inputDate = new Date(value);
+      const inputDate = new Date(Number(value));
       const today = new Date();
-      today.setHours(23, 59, 59, 999); // End of today
       
-      if (inputDate > today) {
+      // Reset time to start of day for comparison
+      const inputDateOnly = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
+      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      
+      if (inputDateOnly > todayOnly) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
@@ -57,11 +60,14 @@ const validateUpdateLead = [
   body('lastContactDate')
     .optional()
     .custom((value) => {
-      const inputDate = new Date(value);
+      const inputDate = new Date(Number(value));
       const today = new Date();
-      today.setHours(23, 59, 59, 999); // End of today
       
-      if (inputDate > today) {
+      // Reset time to start of day for comparison
+      const inputDateOnly = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
+      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      
+      if (inputDateOnly > todayOnly) {
         throw new Error('Last contact date cannot be in the future');
       }
       return true;
