@@ -106,6 +106,23 @@ async function fetchAndSaveEmails() {
       return Buffer.from(str.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf-8');
     }
 
+    // Helper to extract only new message content
+    function extractNewContent(body) {
+      // Common reply markers
+      const replyMarkers = [
+        /^On .+ wrote:$/m,
+        /^From: /m,
+        /^-----Original Message-----/m
+      ];
+      for (const marker of replyMarkers) {
+        const match = body.match(marker);
+        if (match) {
+          return body.substring(0, match.index).trim();
+        }
+      }
+      return body.trim();
+    }
+
     // Try to get plain text part
     if (payload.parts) {
       const part = payload.parts.find(p => p.mimeType === 'text/plain');
@@ -125,6 +142,9 @@ async function fetchAndSaveEmails() {
 
     // If still no body, skip saving
     if (!body) continue;
+
+    // Extract only the new message content
+    body = extractNewContent(body);
 
     // Save to communication log
     await communicationService.createCommunication({
