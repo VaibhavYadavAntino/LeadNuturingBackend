@@ -6,7 +6,8 @@ const communicationSchema = new mongoose.Schema({
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   admin: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }, // optional
-  direction: { type: String, enum: ['sent', 'received'], default: 'sent' } // optional
+  direction: { type: String, enum: ['sent', 'received'], default: 'sent' }, // optional
+  gmailMessageId: { type: String, unique: true, sparse: true } // for deduplication
 });
 
 module.exports = mongoose.model('Communication', communicationSchema);

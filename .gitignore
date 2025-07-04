@@ -21,3 +21,6 @@ Thumbs.db
 
 # Ngrok configuration
 ngrok.yml
+
+# Gmail OAuth tokens (SENSITIVE)
+token.json
