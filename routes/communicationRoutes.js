@@ -11,6 +11,7 @@ const {
 } = require('../controllers/communicationController');
 const { protect } = require('../middleware/authMiddleware');
 const validateObjectId = require('../middleware/validateObjectId');
+const { fetchRecentGmailMessages } = require('../services/messagingService');
 
 //  Import validators
 const {
@@ -23,6 +24,15 @@ const { handleValidationErrors } = require('../validators/handleValidation');
 router.route('/')
   .post(protect, validateCreateCommunicationLog, handleValidationErrors, createCommunicationLog)
   .get(protect, getAllCommunicationLogs);
+
+router.get('/test-gmail', async (req, res) => {
+  try {
+    const messages = await fetchRecentGmailMessages(5);
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.route('/:id')
   .get(protect, validateObjectId, getCommunicationLogById)
