@@ -13,7 +13,11 @@ const validateCreateLead = [
   body('phone')
     .notEmpty().withMessage('Phone is required')
     .isLength({ min: 10, max: 10 }).withMessage('Phone must be 10 digits')
-    .isNumeric().withMessage('Phone must be in numeric'),
+    .isNumeric().withMessage('Phone must be in numeric')
+    .custom(async (phone) => {
+      const existing = await Lead.findOne({ phone });
+      if (existing) throw new Error('Phone number already exists');
+    }),
 
   body('companyName').notEmpty().withMessage('Company name is required'),
   body('lastContactDate')

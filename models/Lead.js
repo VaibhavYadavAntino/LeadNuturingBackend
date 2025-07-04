@@ -7,6 +7,7 @@ const leadSchema = new mongoose.Schema({
     type: String,
     required: true,
     maxlength: 10,
+    unique: true,
   },
   lastContactDate: { type: Date, required: true },
   status: {
